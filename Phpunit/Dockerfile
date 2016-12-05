@@ -39,8 +39,8 @@ RUN ext_path= \
         igbinary \
         mongodb \
         redis \
-        xdebug; \
-        xmlrpc \
+        xdebug \
+        xmlrpc; \
     do ext_path=$(find  / -name "${ext}"*.so* | head -n 1); \
         if [ -n "${ext_path+set}" ]; then \
             ln -svf "${ext_path}" ${php_ext_dir}/${ext}.so; \
