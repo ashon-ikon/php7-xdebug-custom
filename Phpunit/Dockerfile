@@ -3,10 +3,7 @@
 
 FROM php:7-apache
 
-RUN set -xe; \
-    groupadd -g 1032 alpine && \
-    useradd -m -u 1031 -r -g alpine alpine
-
+RUN set -xe
 
 RUN printf "deb http://packages.dotdeb.org jessie all\ndeb-src http://packages.dotdeb.org jessie all\n" \
         >> /etc/apt/sources.list.d/extras.list
@@ -72,6 +69,3 @@ RUN php_ini_path=$(realpath $(php --ini | grep -e ".*\.ini files in" | cut -d':'
         igbinary \
         redis; \
     do printf  "extension=${ext}.so\n" >> "${php_ini_path}/20-${ext}.ini"; done
-
-
-USER alpine
