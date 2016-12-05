@@ -40,7 +40,7 @@ RUN docker-php-ext-install -j5 \
         pdo_mysql \
         pcntl \
         soap \
-        zip;
+        zip > /dev/null >2&1;
 
 # Add composer
 RUN \
