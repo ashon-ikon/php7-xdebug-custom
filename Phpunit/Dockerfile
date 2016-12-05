@@ -5,7 +5,7 @@ FROM php:7-apache
 
 RUN set -xe; \
     groupadd -g 1032 alpine && \
-    useradd -M -u 1031 -r -g alpine alpine
+    useradd -m -u 1031 -r -g alpine alpine
 
 
 RUN printf "deb http://packages.dotdeb.org jessie all\ndeb-src http://packages.dotdeb.org jessie all\n" \
@@ -18,19 +18,54 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN curl https://www.dotdeb.org/dotdeb.gpg | apt-key add -
 
 RUN apt-get update && apt-get install -y \
-    git wget zip \
-    libjpeg62-turbo-dev libmcrypt-dev libpng12-dev libicu-dev libxml2-dev \
-    php7.0-xdebug  php7.0-soap php7.0-intl \
-    php7.0-cli php7.0-apcu php7.0-gd php7.0-igbinary \
-    php7.0-mcrypt php7.0-mongodb php7.0-redis php7.0-bcmath php7.0-xmlrpc
+    git wget zip mysql-client \
+    libjpeg62-turbo-dev \
+    libmcrypt-dev libpng12-dev \
+    libicu-dev libxml2-dev \
+    php7.0-bcmath \
+    php7.0-xdebug \
+    php7.0-cli \
+    php7.0-apcu \
+    php7.0-igbinary \
+    php7.0-mongodb \
+    php7.0-redis \
+    php7.0-xmlrpc
 
-RUN for ext in gd bcmath xmlrpc intl pdo_mysql pcntl zip; \
-        do docker-php-ext-install $ext > /dev/null; done
+# Install the extensions
+RUN ext_path= \
+    && php_ext_dir=$(php-config --extension-dir) && \
+    for ext in \
+        bcmath \
+        igbinary \
+        mongodb \
+        redis \
+        xdebug; \
+        xmlrpc \
+    do ext_path=$(find  / -name "${ext}"*.so* | head -n 1); \
+        if [ -n "${ext_path+set}" ]; then \
+            ln -svf "${ext_path}" ${php_ext_dir}/${ext}.so; \
+        fi; \
+    done
+
+# Enable the extensions
+RUN php_ini_path=$(realpath $(php --ini | grep -e ".*\.ini files in" | cut -d':' -f2)) && \
+    for ext in \
+        bcmath \
+        igbinary \
+        redis; \
+    do printf  "extension=${ext}.so\n" >> "${php_ini_path}/20-${ext}.ini"; done
+
+RUN for ext in \
+        gd \
+        mcrypt \
+        intl \
+        pdo_mysql \
+        pcntl \
+        soap \
+        zip; \
+    do docker-php-ext-install $ext > /dev/null; done
 
 # Add composer
-#RUN wget -t 30 -qO - http://getcomposer.org/installer | php \
-#        && mv composer.phar /usr/local/bin/composer
-
 RUN \
     wget -q http://getcomposer.org/download/1.2.2/composer.phar \
     && chmod +x composer.phar \
