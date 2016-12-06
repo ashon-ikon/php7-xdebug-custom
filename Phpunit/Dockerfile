@@ -25,6 +25,7 @@ RUN apt-get install -y \
     php7.0-xdebug \
     php7.0-cli \
     php7.0-apcu \
+    php7.0-imagick \
     php7.0-igbinary \
     php7.0-mongodb \
     php7.0-redis \
@@ -52,6 +53,7 @@ RUN ext_path= \
     for ext in \
         bcmath \
         igbinary \
+        imagick \
         mongodb \
         redis \
         xdebug \
