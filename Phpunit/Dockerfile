@@ -69,5 +69,7 @@ RUN php_ini_path=$(realpath $(php --ini | grep -e ".*\.ini files in" | cut -d':'
     for ext in \
         bcmath \
         igbinary \
+        imagick \
+        xmlrpc \
         redis; \
     do printf  "extension=${ext}.so\n" >> "${php_ini_path}/20-${ext}.ini"; done
