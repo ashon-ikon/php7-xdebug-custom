@@ -33,15 +33,13 @@ RUN apt-get install -y \
 
 RUN docker-php-ext-install -j5 \
         gd \
+        calendar \
         mcrypt \
         intl \
         pdo_mysql \
         pcntl \
         soap \
         zip > /dev/null 2>&1;
-        
-# Enable calendar extension
-RUN docker-php-ext-enable calendar
 
 # Add composer
 RUN \
