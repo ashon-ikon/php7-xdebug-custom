@@ -39,6 +39,9 @@ RUN docker-php-ext-install -j5 \
         pcntl \
         soap \
         zip > /dev/null 2>&1;
+        
+# Enable calendar extension
+RUN docker-php-ext-enable calendar
 
 # Add composer
 RUN \
