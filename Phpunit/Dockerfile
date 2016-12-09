@@ -68,5 +68,11 @@ RUN \
     && chmod +x composer.phar \
     && mv composer.phar /usr/local/bin/composer
 
+# Add Scrutinizer Ocular
+RUN \
+    wget -q https://scrutinizer-ci.com/ocular.phar \
+    && chmod +x ocular.phar \
+    && mv ocular.phar /usr/local/bin/ocular
+
 
 CMD /bin/bash -i
